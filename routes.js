@@ -13,6 +13,7 @@ const requestHandler = (req, res) => {
     );
     res.write('</body>');
     res.write('</html>');
+
     return res.end();
   }
 
@@ -21,12 +22,14 @@ const requestHandler = (req, res) => {
     req.on('data', (chunk) => {
       body.push(chunk);
     });
+
     return req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
       const message = parsedBody.split('=')[1];
       fs.writeFile('message.txt', message, (err) => {
         res.statusCode = 302;
         res.setHeader('Location', '/');
+
         return res.end();
       });
     });
