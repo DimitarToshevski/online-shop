@@ -5,6 +5,8 @@ const path = require('path');
 
 const app = express();
 
+const errorController = require('./controllers/error');
+
 // app.engine(
 //   'hbs',
 //   expressHbs({
@@ -27,10 +29,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  res
-    .status(404)
-    .render('ejs/404', { pageTitle: 'Page Not Found', path: '404' });
-});
+app.use(errorController.get404);
 
 app.listen(3000);
