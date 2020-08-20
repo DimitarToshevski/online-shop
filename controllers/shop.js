@@ -6,9 +6,17 @@ const getProducts = (req, res, next) => {
       products,
       pageTitle: 'All Products',
       path: '/products',
-      // hasProducts: products.length > 0,
-      // activeShop: true,
-      // productCss: true,
+    });
+  });
+};
+
+const getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  Product.findById(productId, (product) => {
+    res.render('ejs/shop/product-detail', {
+      product,
+      pageTitle: product ? product.title : 'No product found.',
+      path: '/products',
     });
   });
 };
@@ -19,9 +27,6 @@ const getIndex = (req, res, next) => {
       products,
       pageTitle: 'Shop',
       path: '/',
-      // hasProducts: products.length > 0,
-      // activeShop: true,
-      // productCss: true,
     });
   });
 };
@@ -30,9 +35,6 @@ const getCart = (req, res, next) => {
   res.render('ejs/shop/cart', {
     pageTitle: 'Your Cart',
     path: '/cart',
-    // hasProducts: products.length > 0,
-    // activeShop: true,
-    // productCss: true,
   });
 };
 
@@ -40,9 +42,6 @@ const getOrders = (req, res, next) => {
   res.render('ejs/shop/orders', {
     pageTitle: 'Your Orders',
     path: '/orders',
-    // hasProducts: products.length > 0,
-    // activeShop: true,
-    // productCss: true,
   });
 };
 
@@ -50,9 +49,6 @@ const getCheckout = (req, res, next) => {
   res.render('ejs/shop/checkout', {
     pageTitle: 'Checkout',
     path: '/checkout',
-    // hasProducts: products.length > 0,
-    // activeShop: true,
-    // productCss: true,
   });
 };
 
@@ -62,4 +58,5 @@ module.exports = {
   getCart,
   getCheckout,
   getOrders,
+  getProduct,
 };
