@@ -16,10 +16,16 @@ const getProductsFromFile = (callback) => {
 
 module.exports = class Product {
   title;
+  imageUrl;
+  description;
+  price;
 
   constructor(rawObject) {
     if (rawObject) {
       this.title = rawObject.title;
+      this.imageUrl = rawObject.imageUrl;
+      this.description = rawObject.description;
+      this.price = rawObject.price;
     }
   }
 
