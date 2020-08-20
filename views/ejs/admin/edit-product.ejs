@@ -29,6 +29,10 @@
                 <textarea type="text" name="description" id="description" rows="5"><%= editMode ? product.description : '' %></textarea>
             </div>
 
+            <% if (editMode) { %>
+                <input type="hidden" value="<%= product.id %>" name="productId">
+            <% } %>
+
             <button class="btn" type="submit"><%= editMode ? 'Update Product' : 'Add Product' %></button>
         </form>
     </main>

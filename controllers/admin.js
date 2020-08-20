@@ -48,9 +48,18 @@ const getEditProduct = (req, res, next) => {
   });
 };
 
+const postEditProduct = (req, res, next) => {
+  const productId = req.body.productId;
+
+  const updatedProduct = new Product({ ...req.body, id: productId });
+
+  updatedProduct.save();
+};
+
 module.exports = {
   getAddProduct,
   postAddProduct,
   getProducts,
   getEditProduct,
+  postEditProduct,
 };
