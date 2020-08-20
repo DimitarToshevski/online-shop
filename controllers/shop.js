@@ -36,6 +36,16 @@ const getCart = (req, res, next) => {
   });
 };
 
+const getOrders = (req, res, next) => {
+  res.render('ejs/shop/orders', {
+    pageTitle: 'Your Orders',
+    path: '/orders',
+    // hasProducts: products.length > 0,
+    // activeShop: true,
+    // productCss: true,
+  });
+};
+
 const getCheckout = (req, res, next) => {
   res.render('ejs/shop/checkout', {
     pageTitle: 'Checkout',
@@ -51,4 +61,5 @@ module.exports = {
   getIndex,
   getCart,
   getCheckout,
+  getOrders,
 };
