@@ -38,6 +38,13 @@ const getCart = (req, res, next) => {
   });
 };
 
+const postCart = (req, res, next) => {
+  const productId = req.body.productId;
+
+  console.log(productId);
+  res.redirect('/cart');
+};
+
 const getOrders = (req, res, next) => {
   res.render('ejs/shop/orders', {
     pageTitle: 'Your Orders',
@@ -59,4 +66,5 @@ module.exports = {
   getCheckout,
   getOrders,
   getProduct,
+  postCart,
 };
