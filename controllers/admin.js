@@ -17,9 +17,9 @@ const getAddProduct = (req, res, next) => {
   res.render('ejs/admin/add-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    activeAddProduct: true,
-    productCss: true,
-    formsCss: true,
+    // activeAddProduct: true,
+    // productCss: true,
+    // formsCss: true,
   });
 };
 
