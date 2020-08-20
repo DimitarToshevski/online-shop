@@ -15,11 +15,11 @@ const getProductsFromFile = (callback) => {
 };
 
 module.exports = class Product {
+  id;
   title;
   imageUrl;
   description;
   price;
-  id;
 
   constructor(rawObject) {
     if (rawObject) {
