@@ -65,8 +65,15 @@ const postCart = (req, res, next) => {
     Cart.addProduct(productId, product.price);
   });
 
-  console.log(productId);
   res.redirect('/cart');
+};
+
+const postCartDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  Product.findById(productId, (product) => {
+    Cart.deleteProduct(productId, product.price);
+    res.redirect('/cart');
+  });
 };
 
 const getOrders = (req, res, next) => {
@@ -91,4 +98,5 @@ module.exports = {
   getOrders,
   getProduct,
   postCart,
+  postCartDeleteProduct,
 };
