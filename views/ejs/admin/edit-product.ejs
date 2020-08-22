@@ -30,7 +30,7 @@
             </div>
 
             <% if (editMode) { %>
-                <input type="hidden" value="<%= product.id %>" name="productId">
+                <input type="hidden" value="<%= mongo ? product._id : product.id %>" name="productId">
             <% } %>
 
             <button class="btn" type="submit"><%= editMode ? 'Update Product' : 'Add Product' %></button>

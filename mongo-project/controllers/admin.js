@@ -1,8 +1,7 @@
-const Product = require('../../models/product');
+const Product = require('../models/product');
 
 const getProducts = (req, res, next) => {
-  req.user
-    .getProducts()
+  Product.fetchAll()
     .then((products) => {
       res.render('ejs/admin/products', {
         products,
@@ -24,8 +23,10 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = (req, res, next) => {
-  req.user
-    .createProduct(req.body)
+  const product = new Product(req.body);
+
+  product
+    .save(req.body)
     .then(() => {
       res.redirect('/mongo/admin/products');
     })
@@ -40,11 +41,8 @@ const getEditProduct = (req, res, next) => {
     return res.redirect('/mongo');
   }
 
-  req.user
-    .getProducts({ where: { id: productId } })
-    .then((products) => {
-      const product = products[0];
-
+  Product.findById(productId)
+    .then((product) => {
       if (!product) {
         return res.redirect('/mongo');
       }
@@ -63,15 +61,13 @@ const getEditProduct = (req, res, next) => {
 const postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
 
-  Product.findByPk(productId)
-    .then((product) => {
-      product.title = req.body.title;
-      product.price = req.body.price;
-      product.imageUrl = req.body.imageUrl;
-      product.description = req.body.description;
+  const product = new Product({
+    ...req.body,
+    id: productId,
+  });
 
-      return product.save();
-    })
+  product
+    .save()
     .then(() => {
       res.redirect('/mongo/admin/products');
     })
@@ -81,10 +77,7 @@ const postEditProduct = (req, res, next) => {
 const postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
 
-  Product.findByPk(productId)
-    .then((product) => {
-      return product.destroy();
-    })
+  Product.deleteById(productId)
     .then(() => {
       res.redirect('/mongo/admin/products');
     })

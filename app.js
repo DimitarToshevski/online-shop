@@ -6,7 +6,7 @@ const path = require('path');
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 
-const mongoConnect = require('./util/nosql-database');
+const mongo = require('./util/nosql-database');
 
 const User = require('./models/user');
 
@@ -65,14 +65,16 @@ sequelize
     if (!user) {
       return User.create({ name: 'Dimitar', email: 'test@test.com' });
     }
+
     return user;
   })
   .then((user) => {
     return user.createCart();
   })
   .then(() => {
-    return mongoConnect(() => {
+    return mongo.mongoConnect(() => {
       console.log('Listening on port: ', 3000);
+
       app.listen(3000);
     });
   })

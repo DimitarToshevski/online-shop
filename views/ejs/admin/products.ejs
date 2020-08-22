@@ -24,9 +24,9 @@
                     </p>
                 </div>
                 <div class="card__actions">
-                    <a href="<%= (mongo ? '/mongo/admin/edit-product/' : '/admin/edit-product/') + product.id + '?edit=true' %>" class="btn">Edit</a>
+                    <a href="<%= (mongo ? '/mongo/admin/edit-product/' + product._id : '/admin/edit-product/' + product.id) + '?edit=true' %>" class="btn">Edit</a>
                     <form action="<%= mongo ? '/mongo/admin/delete-product' : '/admin/delete-product' %>" method="POST">
-                        <input type="hidden" value="<%= product.id %>" name="productId">
+                        <input type="hidden" value="<%= mongo ? product._id : product.id %>" name="productId">
                         <button class="btn" type="submit">Delete</button>
                     </form>
                 </div>

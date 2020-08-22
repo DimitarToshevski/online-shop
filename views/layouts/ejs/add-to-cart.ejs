@@ -1,4 +1,8 @@
 <form action="<%= mongo ? '/mongo/cart' : '/cart' %>" method="POST">
-  <input type="hidden" name="productId" value="<%= product.id %>" />
+  <input
+    type="hidden"
+    name="productId"
+    value="<%= mongo ? product._id : product.id %>"
+  />
   <button class="btn" type="submit">Add to Cart</button>
 </form>
