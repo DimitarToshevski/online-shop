@@ -1,4 +1,4 @@
-const Product = require('../models/product');
+const Product = require('../../models/product');
 
 const getProducts = (req, res, next) => {
   req.user
@@ -8,7 +8,7 @@ const getProducts = (req, res, next) => {
         products,
         pageTitle: 'Products',
         path: '/admin/products',
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -19,7 +19,7 @@ const getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editMode: false,
-    mongo: false,
+    mongo: true,
   });
 };
 
@@ -27,7 +27,7 @@ const postAddProduct = (req, res, next) => {
   req.user
     .createProduct(req.body)
     .then(() => {
-      res.redirect('/admin/products');
+      res.redirect('/mongo/admin/products');
     })
     .catch((err) => console.log(err));
 };
@@ -37,7 +37,7 @@ const getEditProduct = (req, res, next) => {
   const productId = req.params.productId;
 
   if (!editMode) {
-    return res.redirect('/');
+    return res.redirect('/mongo');
   }
 
   req.user
@@ -46,7 +46,7 @@ const getEditProduct = (req, res, next) => {
       const product = products[0];
 
       if (!product) {
-        return res.redirect('/');
+        return res.redirect('/mongo');
       }
 
       res.render('ejs/admin/edit-product', {
@@ -54,7 +54,7 @@ const getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editMode,
         product,
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -73,7 +73,7 @@ const postEditProduct = (req, res, next) => {
       return product.save();
     })
     .then(() => {
-      res.redirect('/admin/products');
+      res.redirect('/mongo/admin/products');
     })
     .catch((err) => console.log(err));
 };
@@ -86,7 +86,7 @@ const postDeleteProduct = (req, res, next) => {
       return product.destroy();
     })
     .then(() => {
-      res.redirect('/admin/products');
+      res.redirect('/mongo/admin/products');
     })
     .catch((err) => console.log(err));
 };

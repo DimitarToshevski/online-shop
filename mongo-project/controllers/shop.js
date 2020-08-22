@@ -1,4 +1,4 @@
-const Product = require('../models/product');
+const Product = require('../../models/product');
 
 const getProducts = (req, res, next) => {
   Product.findAll()
@@ -7,7 +7,7 @@ const getProducts = (req, res, next) => {
         products,
         pageTitle: 'All Products',
         path: '/products',
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -22,7 +22,7 @@ const getProduct = (req, res, next) => {
         product,
         pageTitle: product.title,
         path: '/products',
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -35,7 +35,7 @@ const getIndex = (req, res, next) => {
         products,
         pageTitle: 'Shop',
         path: '/',
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -52,7 +52,7 @@ const getCart = (req, res, next) => {
         pageTitle: 'Your Cart',
         path: '/cart',
         products,
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => {
@@ -88,7 +88,7 @@ const postCart = (req, res, next) => {
       });
     })
     .then(() => {
-      res.redirect('/cart');
+      res.redirect('/mongo/cart');
     })
     .catch((err) => {
       console.log(err);
@@ -108,7 +108,7 @@ const postCartDeleteProduct = (req, res, next) => {
       return product.cartItem.destroy();
     })
     .then(() => {
-      res.redirect('/cart');
+      res.redirect('/mongo/cart');
     })
     .catch((err) => {
       console.log(err);
@@ -143,7 +143,7 @@ const postOrder = (req, res, next) => {
       return fetchedCart.setProducts(null);
     })
     .then(() => {
-      res.redirect('/orders');
+      res.redirect('/mongo/orders');
     })
     .catch((err) => {
       console.log(err);
@@ -158,7 +158,7 @@ const getOrders = (req, res, next) => {
         pageTitle: 'Your Orders',
         path: '/orders',
         orders,
-        mongo: false,
+        mongo: true,
       });
     })
     .catch((err) => console.log(err));
@@ -168,7 +168,7 @@ const getCheckout = (req, res, next) => {
   res.render('ejs/shop/checkout', {
     pageTitle: 'Checkout',
     path: '/checkout',
-    mongo: false,
+    mongo: true,
   });
 };
 

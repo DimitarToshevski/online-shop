@@ -4,13 +4,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const sequelize = require('./util/database');
+const sqlAssistant = require('./util/sql-assistant');
 
-const Product = require('./models/product');
 const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
 
 const app = express();
 
@@ -31,6 +27,7 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const mongoRoutes = require('./mongo-project/routes/main');
 
 app.use(bodyParser.urlencoded({ extended: true })); // parsing the body (files need different parsers)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,28 +41,19 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+app.use('/mongo', mongoRoutes);
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.get404);
 
 // Database relations
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Product);
-
-User.hasOne(Cart);
-Cart.belongsTo(User); // optional
-
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
+sqlAssistant.setupDataRelations();
 
 sequelize
   .sync()
-  .then((result) => {
+  .then(() => {
     return User.findByPk(1);
   })
   .then((user) => {
