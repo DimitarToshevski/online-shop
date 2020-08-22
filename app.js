@@ -6,6 +6,8 @@ const path = require('path');
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 
+const mongoConnect = require('./util/nosql-database');
+
 const User = require('./models/user');
 
 const app = express();
@@ -69,6 +71,9 @@ sequelize
     return user.createCart();
   })
   .then(() => {
-    app.listen(3000);
+    return mongoConnect(() => {
+      console.log('Listening on port: ', 3000);
+      app.listen(3000);
+    });
   })
   .catch((err) => console.log(err));
