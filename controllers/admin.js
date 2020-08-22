@@ -21,7 +21,8 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = (req, res, next) => {
-  Product.create(req.body)
+  req.user
+    .createProduct(req.body)
     .then(() => {
       res.redirect('/admin/products');
     })
