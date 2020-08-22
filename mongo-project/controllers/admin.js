@@ -23,7 +23,7 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = (req, res, next) => {
-  const product = new Product(req.body);
+  const product = new Product({ ...req.body, userId: req.mongoUser._id });
 
   product
     .save(req.body)
@@ -64,6 +64,7 @@ const postEditProduct = (req, res, next) => {
   const product = new Product({
     ...req.body,
     id: productId,
+    userId: req.mongoUser._id,
   });
 
   product

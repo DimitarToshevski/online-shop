@@ -7,6 +7,7 @@ class Product {
   price;
   description;
   imageUrl;
+  userId;
 
   constructor(rawObject) {
     if (rawObject) {
@@ -15,6 +16,7 @@ class Product {
       this.price = rawObject.price;
       this.description = rawObject.description;
       this.imageUrl = rawObject.imageUrl;
+      this.userId = rawObject.userId;
     }
   }
 

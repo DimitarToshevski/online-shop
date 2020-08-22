@@ -10,6 +10,8 @@ const mongo = require('./util/nosql-database');
 
 const User = require('./models/user');
 
+const MongoUser = require('./mongo-project/models/user');
+
 const app = express();
 
 const errorController = require('./controllers/error');
@@ -38,6 +40,10 @@ app.use((req, res, next) => {
   User.findByPk(1)
     .then((user) => {
       req.user = user;
+      return MongoUser.findById('5f413fdbeeda442f6884b5b8');
+    })
+    .then((user) => {
+      req.mongoUser = new MongoUser(user);
       next();
     })
     .catch((err) => console.log(err));
