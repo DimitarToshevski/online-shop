@@ -27,7 +27,7 @@
             </p>
           </div>
           <div class="card__actions">
-            <a href="/products/<%= product.id %>" class="btn">Details</a>
+            <a href="<%= (mongo ? '/mongo/products/' : '/products/') + product.id %>" class="btn">Details</a>
             <%- include('../../layouts/ejs/add-to-cart', {product}) %>
           </div>
         </article>

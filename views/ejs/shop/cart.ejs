@@ -10,7 +10,7 @@
                 <% products.forEach((product)=>{ %>
                     <li class="cart__item">
                         <p><%= product.title %> (<%= product.cartItem.quantity %>)</p>
-                        <form action="/cart-delete-item" method="POST">
+                        <form action="<%= mongo ? '/mongo/cart-delete-item' : '/cart-delete-item' %>" method="POST">
                             <input type="hidden" value="<%= product.id %>" name="productId">
                             <button class="btn danger" type="submit">Delete</button>
                         </form>
@@ -19,7 +19,7 @@
             </ul>
             <div class="centered">
                 <hr>
-                <form action="/create-order" method="POST">
+                <form action="<%= mongo ? '/mongo/create-order' : '/create-order' %>" method="POST">
                     <button type="submit" class="btn">Order Now!</button>
                 </form>
             </div>

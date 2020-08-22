@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const sequelize = require('./util/database');
+const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 
 const User = require('./models/user');
@@ -41,18 +41,21 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+// routes that are using controllers connected to MongoDB
 app.use('/mongo', mongoRoutes);
 
+// routes that are using controllers connected to MySQL
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
+// error page for both MySQL and MongoDB routes
 app.use(errorController.get404);
 
 // Database relations
 sqlAssistant.setupDataRelations();
 
 sequelize
-  .sync()
+  .sync() // creates tables for all sql models - use { force: true } to re-create the tables
   .then(() => {
     return User.findByPk(1);
   })
@@ -68,4 +71,4 @@ sequelize
   .then(() => {
     app.listen(3000);
   })
-  .catch((err) => console.log(err)); // creates tables for all your models
+  .catch((err) => console.log(err));

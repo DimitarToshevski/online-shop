@@ -8,7 +8,7 @@
     <%- include('../../layouts/ejs/navigation') %>
 
     <main>
-        <form class="product-form" action="<%= editMode ? '/admin/edit-product' : '/admin/add-product' %>" method="POST">
+        <form class="product-form" action="<%= editMode ? mongo ? '/mongo/admin/edit-product' : '/admin/edit-product' : mongo ? '/mongo/admin/add-product' : '/admin/add-product' %>" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
                 <input type="text" name="title" id="title" value="<%= editMode ? product.title : '' %>" />
