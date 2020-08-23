@@ -47,14 +47,25 @@ app.use(
   session({ secret: '1234', resave: false, saveUninitialized: false, store })
 );
 
+// Store the MySQL user in the req
 app.use((req, res, next) => {
   User.findByPk(1)
     .then((user) => {
       req.user = user;
-      return MongoUser.findById('5f423a76f3b9d736507ff93c');
+      next();
     })
+    .catch((err) => console.log(err));
+});
+
+// Store the Mongoose user in the req
+app.use((req, res, next) => {
+  if (!req.session.mongoUser) {
+    return next();
+  }
+
+  MongoUser.findById(req.session.mongoUser._id)
     .then((user) => {
-      req.mongoUser = new MongoUser(user);
+      req.mongoUser = user;
       next();
     })
     .catch((err) => console.log(err));

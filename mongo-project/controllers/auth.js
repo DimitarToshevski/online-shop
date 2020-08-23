@@ -1,3 +1,5 @@
+const MongoUser = require('../models/user');
+
 const getLogin = (req, res, next) => {
   const isLoggedIn = req.session.isLoggedIn;
   res.render('ejs/auth/login', {
@@ -9,8 +11,16 @@ const getLogin = (req, res, next) => {
 };
 
 const postLogin = (req, res, next) => {
-  req.session.isLoggedIn = true;
-  res.redirect('/mongo');
+  MongoUser.findById('5f423a76f3b9d736507ff93c')
+    .then((user) => {
+      req.session.isLoggedIn = true;
+      req.session.mongoUser = user;
+      req.session.save((err) => {
+        console.log(err);
+        res.redirect('/mongo');
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 const postLogout = (req, res, next) => {

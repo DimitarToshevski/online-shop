@@ -1,7 +1,6 @@
 const Product = require('../models/product');
 
 const getProducts = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
   Product.find()
     // .select('title price -_id').populate('userId')
     .then((products) => {
@@ -10,25 +9,27 @@ const getProducts = (req, res, next) => {
         pageTitle: 'Products',
         path: '/admin/products',
         mongo: true,
-        isLoggedIn,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 const getAddProduct = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
   res.render('ejs/admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editMode: false,
     mongo: true,
-    isLoggedIn,
+    isLoggedIn: req.session.isLoggedIn,
   });
 };
 
 const postAddProduct = (req, res, next) => {
-  const product = new Product({ ...req.body, userId: req.mongoUser._id });
+  const product = new Product({
+    ...req.body,
+    userId: req.mongoUser._id,
+  });
 
   product
     .save()
@@ -39,7 +40,6 @@ const postAddProduct = (req, res, next) => {
 };
 
 const getEditProduct = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
   const editMode = req.query.edit;
   const productId = req.params.productId;
 
@@ -59,7 +59,7 @@ const getEditProduct = (req, res, next) => {
         editMode,
         product,
         mongo: true,
-        isLoggedIn,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));

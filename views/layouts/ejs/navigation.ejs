@@ -17,6 +17,7 @@
           >Products</a
         >
       </li>
+      <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <a
           class="<%= path === '/cart' ? 'active' : '' %>"
@@ -31,7 +32,6 @@
           >Orders</a
         >
       </li>
-      <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <a
           class="<%= path === '/admin/add-product' ? 'active' : '' %>"
@@ -49,6 +49,7 @@
       <% } %>
     </ul>
     <ul class="main-header__item-list">
+      <% if (!isLoggedIn) { %>
       <li class="main-header__item">
         <a
           class="<%= path === '/login' ? 'active' : '' %>"
@@ -56,11 +57,13 @@
           >Login
         </a>
       </li>
+      <% } %> <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <form action="<%= mongo ? '/mongo/logout': '/logout' %>" method="POST">
           <button type="submit">Logout</button>
         </form>
       </li>
+      <% } %>
     </ul>
   </nav>
 </header>

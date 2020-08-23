@@ -1,3 +1,4 @@
+<% if (isLoggedIn) { %>
 <form action="<%= mongo ? '/mongo/cart' : '/cart' %>" method="POST">
   <input
     type="hidden"
@@ -6,3 +7,4 @@
   />
   <button class="btn" type="submit">Add to Cart</button>
 </form>
+<% } %>
