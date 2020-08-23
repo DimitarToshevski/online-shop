@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 const getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.mongoUser._id })
     // .select('title price -_id').populate('userId')
     .then((products) => {
       res.render('ejs/admin/products', {
@@ -67,16 +67,18 @@ const postEditProduct = (req, res, next) => {
 
   Product.findById(productId)
     .then((product) => {
+      if (product.userId.toString() !== req.mongoUser._id.toString()) {
+        return res.redirect('/mongo');
+      }
+
       product.title = req.body.title;
       product.price = req.body.price;
       product.description = req.body.description;
       product.imageUrl = req.body.imageUrl;
 
-      return product.save();
-    })
-
-    .then(() => {
-      res.redirect('/mongo/admin/products');
+      return product.save().then(() => {
+        res.redirect('/mongo/admin/products');
+      });
     })
     .catch((err) => console.log(err));
 };
@@ -84,7 +86,7 @@ const postEditProduct = (req, res, next) => {
 const postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
 
-  Product.findByIdAndDelete(productId)
+  Product.deleteOne({ _id: productId, userId: req.mongoUser._id })
     .then(() => {
       res.redirect('/mongo/admin/products');
     })
