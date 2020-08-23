@@ -77,6 +77,7 @@
         >Shop</a
       >
     </li>
+    <% if (isLoggedIn) { %>
     <li class="mobile-nav__item">
       <a
         class="<%= path === '/products' ? 'active' : '' %>"
@@ -112,14 +113,22 @@
         >Admin Products
       </a>
     </li>
+    <% } %>
   </ul>
   <ul class="mobile-nav__item-list">
+    <% if (!isLoggedIn) { %>
     <li class="mobile-nav__item">
       <a
         class="<%= path === '/login' ? 'active' : '' %>"
         href="<%= mongo ? '/mongo/login': '/login' %>"
         >Login
       </a>
+    </li>
+    <% } else { %>
+    <li class="mobile-nav__item">
+      <form action="<%= mongo ? '/mongo/logout': '/logout' %>" method="POST">
+        <button type="submit">Logout</button>
+      </form>
     </li>
   </ul>
 </nav>
