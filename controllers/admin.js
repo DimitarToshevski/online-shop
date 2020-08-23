@@ -9,6 +9,7 @@ const getProducts = (req, res, next) => {
         pageTitle: 'Products',
         path: '/admin/products',
         mongo: false,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -20,6 +21,7 @@ const getAddProduct = (req, res, next) => {
     path: '/admin/add-product',
     editMode: false,
     mongo: false,
+    isLoggedIn: req.session.isLoggedIn,
   });
 };
 
@@ -55,6 +57,7 @@ const getEditProduct = (req, res, next) => {
         editMode,
         product,
         mongo: false,
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));

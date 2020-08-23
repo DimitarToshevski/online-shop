@@ -5,10 +5,12 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
+const MySqlDbStore = require('express-mysql-session')(session);
 
 // Local imports
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
+const isAuth = require('./middleware/is-auth');
 
 // Model imports
 const User = require('./models/user');
@@ -19,16 +21,27 @@ const app = express();
 
 const MONGODB_URI =
   'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
-// TODO - implement MySQLDbStore with it's package https://www.npmjs.com/package/express-mysql-session
+
+const mySqlStoreOptions = {
+  host: 'localhost',
+  port: 3306,
+  user: 'admin',
+  password: '1234',
+  database: 'shop',
+};
+
 const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: 'sessions',
 });
 
+const mySqlStore = new MySqlDbStore(mySqlStoreOptions);
+
 // Routes and error controller
 const errorController = require('./controllers/error');
 
 const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
 const shopRoutes = require('./routes/shop');
 const mongoRoutes = require('./mongo-project/routes/main');
 
@@ -54,11 +67,28 @@ app.use(
   session({ secret: '1234', resave: false, saveUninitialized: false, store })
 );
 
+app.use(
+  session({
+    secret: '1234',
+    resave: false,
+    saveUninitialized: false,
+    store: mySqlStore,
+  })
+);
+
 // Store the MySQL user in the req
 app.use((req, res, next) => {
-  User.findByPk(1)
+  if (!req.session.user) {
+    return next();
+  }
+
+  User.findByPk(req.session.user.dataValues.id)
     .then((user) => {
       req.user = user;
+
+      return req.user.createCart();
+    })
+    .then(() => {
       next();
     })
     .catch((err) => console.log(err));
@@ -82,30 +112,18 @@ app.use((req, res, next) => {
 app.use('/mongo', mongoRoutes);
 
 // routes that are using controllers connected to MySQL
-app.use('/admin', adminRoutes);
+app.use('/admin', isAuth, adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 // error page for both MySQL and MongoDB routes
 app.use(errorController.get404);
 
 // Database relations
 sqlAssistant.setupDataRelations();
-// TODO - remove the dummy MySQL user creation after implementing SIgnup
+
 sequelize
   .sync() // creates tables for all sql models - use { force: true } to re-create the tables
-  .then(() => {
-    return User.findByPk(1);
-  })
-  .then((user) => {
-    if (!user) {
-      return User.create({ name: 'Dimitar', email: 'test@test.com' });
-    }
-
-    return user;
-  })
-  .then((user) => {
-    return user.createCart();
-  })
   .then(() => {
     return mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
