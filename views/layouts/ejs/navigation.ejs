@@ -31,7 +31,7 @@
           >Orders</a
         >
       </li>
-      <li class="main-header__item">
+      <!-- <li class="main-header__item">
         <a
           class="<%= path === '/admin/add-product' ? 'active' : '' %>"
           href="<%= mongo ? '/mongo/admin/add-product': '/admin/add-product' %>"
@@ -43,6 +43,15 @@
           class="<%= path === '/admin/products' ? 'active' : '' %>"
           href="<%= mongo ? '/mongo/admin/products': '/admin/products' %>"
           >Admin Products
+        </a>
+      </li> -->
+    </ul>
+    <ul class="main-header__item-list">
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/login' ? 'active' : '' %>"
+          href="<%= mongo ? '/mongo/login': '/login' %>"
+          >Login
         </a>
       </li>
     </ul>
@@ -91,6 +100,15 @@
         class="<%= path === '/admin/products' ? 'active' : '' %>"
         href="<%= mongo ? '/mongo/admin/products': '/admin/products' %>"
         >Admin Products
+      </a>
+    </li>
+  </ul>
+  <ul class="mobile-nav__item-list">
+    <li class="mobile-nav__item">
+      <a
+        class="<%= path === '/login' ? 'active' : '' %>"
+        href="<%= mongo ? '/mongo/login': '/login' %>"
+        >Login
       </a>
     </li>
   </ul>
