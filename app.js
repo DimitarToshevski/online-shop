@@ -3,26 +3,34 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDbStore = require('connect-mongodb-session')(session);
 
+// Local imports
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 
+// Model imports
 const User = require('./models/user');
-
 const MongoUser = require('./mongo-project/models/user');
-const mongoDbUri =
-  'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
 
+// Constants
 const app = express();
 
-const session = require('express-session');
-const MongoDbStore = require('connect-mongodb-session')(session);
+const MONGODB_URI =
+  'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
+// TODO - implement MySQLDbStore with it's package
 const store = new MongoDbStore({
-  uri: mongoDbUri,
+  uri: MONGODB_URI,
   collection: 'sessions',
 });
 
+// Routes and error controller
 const errorController = require('./controllers/error');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const mongoRoutes = require('./mongo-project/routes/main');
 
 // app.engine(
 //   'hbs',
@@ -37,12 +45,11 @@ const errorController = require('./controllers/error');
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
-const mongoRoutes = require('./mongo-project/routes/main');
-
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: true })); // parsing the body (files need different parsers)
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Create a session
 app.use(
   session({ secret: '1234', resave: false, saveUninitialized: false, store })
 );
@@ -100,7 +107,7 @@ sequelize
     return user.createCart();
   })
   .then(() => {
-    return mongoose.connect(mongoDbUri, {
+    return mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
