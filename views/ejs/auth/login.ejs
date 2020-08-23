@@ -14,12 +14,12 @@
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="form-control">
                 <label for="email">E-mail</label>
-                <input type="email" name="email" id="email" />
+                <input type="email" name="email" id="email"  required/>
             </div>
 
             <div class="form-control">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" />
+                <input type="password" name="password" id="password"  required/>
             </div>
 
             <button class="btn" type="submit">Login</button>
