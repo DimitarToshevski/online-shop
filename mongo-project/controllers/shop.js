@@ -70,16 +70,8 @@ const postCart = (req, res, next) => {
 
 const postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts({ where: { id: productId } });
-    })
-    .then((products) => {
-      const product = products[0];
-
-      return product.cartItem.destroy();
-    })
+  req.mongoUser
+    .deleteItemFromCartById(productId)
     .then(() => {
       res.redirect('/mongo/cart');
     })
