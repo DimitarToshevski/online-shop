@@ -10,8 +10,17 @@ const sqlAssistant = require('./util/sql-assistant');
 const User = require('./models/user');
 
 const MongoUser = require('./mongo-project/models/user');
+const mongoDbUri =
+  'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
 
 const app = express();
+
+const session = require('express-session');
+const MongoDbStore = require('connect-mongodb-session')(session);
+const store = new MongoDbStore({
+  uri: mongoDbUri,
+  collection: 'sessions',
+});
 
 const errorController = require('./controllers/error');
 
@@ -34,6 +43,9 @@ const mongoRoutes = require('./mongo-project/routes/main');
 
 app.use(bodyParser.urlencoded({ extended: true })); // parsing the body (files need different parsers)
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({ secret: '1234', resave: false, saveUninitialized: false, store })
+);
 
 app.use((req, res, next) => {
   User.findByPk(1)
@@ -77,13 +89,10 @@ sequelize
     return user.createCart();
   })
   .then(() => {
-    return mongoose.connect(
-      'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
+    return mongoose.connect(mongoDbUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   })
   .then(() => {
     MongoUser.findOne().then((user) => {

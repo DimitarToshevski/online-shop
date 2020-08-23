@@ -3,6 +3,7 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 
 const getProducts = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
   Product.find()
     .then((products) => {
       res.render('ejs/shop/product-list', {
@@ -10,12 +11,14 @@ const getProducts = (req, res, next) => {
         pageTitle: 'All Products',
         path: '/products',
         mongo: true,
+        isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 const getProduct = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
   const productId = req.params.productId;
 
   Product.findById(mongoose.Types.ObjectId(productId))
@@ -25,12 +28,14 @@ const getProduct = (req, res, next) => {
         pageTitle: product.title,
         path: '/products',
         mongo: true,
+        isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 const getIndex = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
   Product.find()
     .then((products) => {
       res.render('ejs/shop/index', {
@@ -38,12 +43,14 @@ const getIndex = (req, res, next) => {
         pageTitle: 'Shop',
         path: '/',
         mongo: true,
+        isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 const getCart = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
   req.mongoUser
     .populate('cart.items.productId')
     .execPopulate()
@@ -53,6 +60,7 @@ const getCart = (req, res, next) => {
         path: '/cart',
         products: user.cart.items,
         mongo: true,
+        isLoggedIn,
       });
     })
     .catch((err) => {
@@ -114,6 +122,8 @@ const postOrder = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
+
   Order.find({ 'user.usersId': req.user._id })
     .then((orders) => {
       res.render('ejs/shop/orders', {
@@ -121,16 +131,19 @@ const getOrders = (req, res, next) => {
         path: '/orders',
         orders,
         mongo: true,
+        isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
 const getCheckout = (req, res, next) => {
+  const isLoggedIn = req.session.isLoggedIn;
   res.render('ejs/shop/checkout', {
     pageTitle: 'Checkout',
     path: '/checkout',
     mongo: true,
+    isLoggedIn,
   });
 };
 
