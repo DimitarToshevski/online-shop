@@ -81,32 +81,8 @@ const postCartDeleteProduct = (req, res, next) => {
 };
 
 const postOrder = (req, res, next) => {
-  let fetchedCart;
-  let fetchedProducts;
-  req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-
-      return cart.getProducts();
-    })
-    .then((products) => {
-      fetchedProducts = products;
-
-      return req.user.createOrder();
-    })
-    .then((order) => {
-      return order.addProducts(
-        fetchedProducts.map((p) => {
-          p.orderItem = { quantity: p.cartItem.quantity };
-
-          return p;
-        })
-      );
-    })
-    .then(() => {
-      return fetchedCart.setProducts(null);
-    })
+  req.mongoUser
+    .addOrder()
     .then(() => {
       res.redirect('/mongo/orders');
     })
@@ -116,8 +92,8 @@ const postOrder = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-  req.user
-    .getOrders({ include: ['products'] })
+  req.mongoUser
+    .getOrders()
     .then((orders) => {
       res.render('ejs/shop/orders', {
         pageTitle: 'Your Orders',
