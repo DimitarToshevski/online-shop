@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const MongoUser = require('../models/user');
 
 const getLogin = (req, res, next) => {
@@ -44,16 +46,20 @@ const postSignup = (req, res, next) => {
         return res.redirect('/mongo/signup');
       }
 
-      const user = new MongoUser({
-        email,
-        password,
-        cart: { items: [] },
-      });
+      return bcrypt
+        .hash(password, 12)
+        .then((hashedPassword) => {
+          const user = new MongoUser({
+            email,
+            password: hashedPassword,
+            cart: { items: [] },
+          });
 
-      return user.save();
-    })
-    .then(() => {
-      res.redirect('/mongo/login');
+          return user.save();
+        })
+        .then(() => {
+          res.redirect('/mongo/login');
+        });
     })
     .catch((err) => console.log(err));
 };
