@@ -34,13 +34,28 @@ const getSignup = (req, res, next) => {
 };
 
 const postSignup = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
-  res.render('ejs/auth/login', {
-    pageTitle: 'Login',
-    path: '/login',
-    mongo: true,
-    isLoggedIn,
-  });
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  MongoUser.findOne({ email })
+    .then((fetchedUser) => {
+      if (fetchedUser) {
+        return res.redirect('/mongo/signup');
+      }
+
+      const user = new MongoUser({
+        email,
+        password,
+        cart: { items: [] },
+      });
+
+      return user.save();
+    })
+    .then(() => {
+      res.redirect('/mongo/login');
+    })
+    .catch((err) => console.log(err));
 };
 
 const postLogout = (req, res, next) => {

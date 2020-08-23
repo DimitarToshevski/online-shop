@@ -90,7 +90,7 @@ app.use(errorController.get404);
 
 // Database relations
 sqlAssistant.setupDataRelations();
-
+// TODO - remove the dummy MySQL user creation after implementing SIgnup
 sequelize
   .sync() // creates tables for all sql models - use { force: true } to re-create the tables
   .then(() => {
@@ -113,15 +113,6 @@ sequelize
     });
   })
   .then(() => {
-    MongoUser.findOne().then((user) => {
-      if (!user) {
-        const newUser = new MongoUser({
-          name: 'Dimitar',
-          email: 'test@test.com',
-          cart: { items: [] },
-        });
-      }
-    });
     console.log('Listening on port: ', 3000);
 
     app.listen(3000);
