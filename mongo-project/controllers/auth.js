@@ -13,7 +13,15 @@ const postLogin = (req, res, next) => {
   res.redirect('/mongo');
 };
 
+const postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect('/mongo/login');
+  });
+};
+
 module.exports = {
   getLogin,
   postLogin,
+  postLogout,
 };

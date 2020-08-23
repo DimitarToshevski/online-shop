@@ -56,6 +56,11 @@
           >Login
         </a>
       </li>
+      <li class="main-header__item">
+        <form action="<%= mongo ? '/mongo/logout': '/logout' %>" method="POST">
+          <button type="submit">Logout</button>
+        </form>
+      </li>
     </ul>
   </nav>
 </header>
