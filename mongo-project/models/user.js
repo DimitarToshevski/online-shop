@@ -1,86 +1,66 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-// class User {
-//   _id;
-//   name;
-//   email;
-//   cart;
+const Schema = mongoose.Schema;
 
-//   constructor(rawObject) {
-//     if (rawObject) {
-//       this.name = rawObject.title;
-//       this.email = rawObject.price;
-//       this.cart = rawObject.cart;
-//       this._id = rawObject._id;
-//     }
-//   }
+const userSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  cart: {
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        quantity: { type: Number, required: true },
+      },
+    ],
+  },
+});
 
-//   save() {
-//     const db = getMongoDb().collection('users');
+userSchema.methods.addToCart = function (product) {
+  const cartProductIndex = this.cart.items.findIndex(
+    (p) => p.productId.toString() === product._id.toString()
+  );
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items];
 
-//     return db.insertOne(this).catch((err) => console.log(err));
-//   }
+  if (cartProductIndex >= 0) {
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    updatedCartItems.push({
+      productId: product._id,
+      quantity: newQuantity,
+    });
+  }
 
-//   addToCart(product) {
-//     const cartProductIndex = this.cart.items.findIndex(
-//       (p) => p.productId.toString() === product._id.toString()
-//     );
+  const updatedCart = {
+    items: updatedCartItems,
+  };
 
-//     let newQuantity = 1;
+  this.cart = updatedCart;
 
-//     const updatedCartItems = [...this.cart.items];
+  return this.save();
+};
 
-//     if (cartProductIndex >= 0) {
-//       newQuantity = this.cart.items[cartProductIndex].quantity + 1;
-//       updatedCartItems[cartProductIndex].quantity = newQuantity;
-//     } else {
-//       updatedCartItems.push({
-//         productId: new mongodb.ObjectId(product._id),
-//         quantity: newQuantity,
-//       });
-//     }
+userSchema.methods.deleteItemFromCartById = function (id) {
+  const updatedCartItems = this.cart.items.filter(
+    (i) => i.productId.toString() !== id.toString()
+  );
+  this.cart.items = updatedCartItems;
 
-//     const updatedCart = {
-//       items: updatedCartItems,
-//     };
+  return this.save();
+};
 
-//     return getMongoDb()
-//       .collection('users')
-//       .updateOne(
-//         { _id: new mongodb.ObjectId(this._id) },
-//         { $set: { cart: updatedCart } }
-//       );
-//   }
+userSchema.methods.clearCart = function () {
+  this.cart = { items: [] };
 
-//   getCart() {
-//     return getMongoDb()
-//       .collection('products')
-//       .find({ _id: { $in: this.cart.items.map((i) => i.productId) } })
-//       .toArray()
-//       .then((products) => {
-//         return products.map((p) => {
-//           return {
-//             ...p,
-//             quantity: this.cart.items.find(
-//               (i) => i.productId.toString() === p._id.toString()
-//             ).quantity,
-//           };
-//         });
-//       });
-//   }
+  return this.save();
+};
 
-//   deleteItemFromCartById(id) {
-//     const updatedCartItems = this.cart.items.filter(
-//       (i) => i.productId.toString() !== id.toString()
-//     );
-
-//     return getMongoDb()
-//       .collection('users')
-//       .updateOne(
-//         { _id: new mongodb.ObjectId(this._id) },
-//         { $set: { cart: { items: updatedCartItems } } }
-//       );
-//   }
+module.exports = mongoose.model('User', userSchema);
 
 //   addOrder() {
 //     return this.getCart()
@@ -113,14 +93,3 @@
 //       .find({ 'user._id': new mongodb.ObjectId(this._id) })
 //       .toArray();
 //   }
-
-//   static findById(id) {
-//     return getMongoDb()
-//       .collection('users')
-//       .find({ _id: new mongodb.ObjectId(id) })
-//       .next()
-//       .catch((err) => console.log(err));
-//   }
-// }
-
-// module.exports = User;

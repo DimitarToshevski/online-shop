@@ -2,6 +2,7 @@ const Product = require('../models/product');
 
 const getProducts = (req, res, next) => {
   Product.find()
+    // .select('title price -_id').populate('userId')
     .then((products) => {
       res.render('ejs/admin/products', {
         products,
@@ -23,7 +24,7 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = (req, res, next) => {
-  const product = new Product({ ...req.body });
+  const product = new Product({ ...req.body, userId: req.mongoUser._id });
 
   product
     .save()

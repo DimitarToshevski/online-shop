@@ -9,9 +9,10 @@
             <ul class="cart__item-list">
                 <% products.forEach((product)=>{ %>
                     <li class="cart__item">
-                        <p><%= product.title %> (<%= mongo ? product.quantity : product.cartItem.quantity %>)</p>
+                        <h1><%= mongo ? product.productId.title : product.title %></h1>
+                        <h2>Quantity: <%= mongo ? product.quantity : product.cartItem.quantity %></h2>
                         <form action="<%= mongo ? '/mongo/cart-delete-item' : '/cart-delete-item' %>" method="POST">
-                            <input type="hidden" value="<%= mongo ? product._id : product.id %>" name="productId">
+                            <input type="hidden" value="<%= mongo ? product.productId._id : product.id %>" name="productId">
                             <button class="btn danger" type="submit">Delete</button>
                         </form>
                     </li>

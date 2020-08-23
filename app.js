@@ -7,9 +7,9 @@ const mongoose = require('mongoose');
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 
-// const User = require('./models/user');
+const User = require('./models/user');
 
-// const MongoUser = require('./mongo-project/models/user');
+const MongoUser = require('./mongo-project/models/user');
 
 const app = express();
 
@@ -35,18 +35,18 @@ const mongoRoutes = require('./mongo-project/routes/main');
 app.use(bodyParser.urlencoded({ extended: true })); // parsing the body (files need different parsers)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use((req, res, next) => {
-//   User.findByPk(1)
-//     .then((user) => {
-//       req.user = user;
-//       return MongoUser.findById('5f413fdbeeda442f6884b5b8');
-//     })
-//     .then((user) => {
-//       req.mongoUser = new MongoUser(user);
-//       next();
-//     })
-//     .catch((err) => console.log(err));
-// });
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+      return MongoUser.findById('5f423a76f3b9d736507ff93c');
+    })
+    .then((user) => {
+      req.mongoUser = new MongoUser(user);
+      next();
+    })
+    .catch((err) => console.log(err));
+});
 
 // routes that are using controllers connected to MongoDB
 app.use('/mongo', mongoRoutes);
@@ -63,19 +63,19 @@ sqlAssistant.setupDataRelations();
 
 sequelize
   .sync() // creates tables for all sql models - use { force: true } to re-create the tables
-  // .then(() => {
-  //   return User.findByPk(1);
-  // })
-  // .then((user) => {
-  //   if (!user) {
-  //     return User.create({ name: 'Dimitar', email: 'test@test.com' });
-  //   }
+  .then(() => {
+    return User.findByPk(1);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: 'Dimitar', email: 'test@test.com' });
+    }
 
-  //   return user;
-  // })
-  // .then((user) => {
-  //   return user.createCart();
-  // })
+    return user;
+  })
+  .then((user) => {
+    return user.createCart();
+  })
   .then(() => {
     return mongoose.connect(
       'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority',
@@ -86,6 +86,15 @@ sequelize
     );
   })
   .then(() => {
+    MongoUser.findOne().then((user) => {
+      if (!user) {
+        const newUser = new MongoUser({
+          name: 'Dimitar',
+          email: 'test@test.com',
+          cart: { items: [] },
+        });
+      }
+    });
     console.log('Listening on port: ', 3000);
 
     app.listen(3000);

@@ -14,7 +14,7 @@
                             <h1># <%= mongo ? order._id : order.id %></h1>
                             <ul class="orders__products">
                                 <% order.products.forEach(product => { %>
-                                    <li class="orders__products-item"><%= product.title %> (<%= mongo ? product.quantity : product.orderItem.quantity %>)</li>
+                                    <li class="orders__products-item"><%= mongo ? product.product.title : product.title %> (<%= mongo ? product.quantity : product.orderItem.quantity %>)</li>
                                     <% }) %>
                             </ul>
                         </li>
