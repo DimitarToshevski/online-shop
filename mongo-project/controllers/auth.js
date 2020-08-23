@@ -13,16 +13,36 @@ const getLogin = (req, res, next) => {
 };
 
 const postLogin = (req, res, next) => {
-  MongoUser.findById('5f423a76f3b9d736507ff93c')
+  const email = req.body.email;
+  const password = req.body.password;
+
+  MongoUser.findOne({ email })
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.mongoUser = user;
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect('/mongo');
-      });
+      if (!user) {
+        return res.redirect('/mongo/login');
+      }
+
+      bcrypt
+        .compare(password, user.password)
+        .then((doMatch) => {
+          if (doMatch) {
+            req.session.isLoggedIn = true;
+            req.session.mongoUser = user;
+            return req.session.save(() => {
+              res.redirect('/mongo');
+            });
+          } else {
+            return res.redirect('/mongo/login');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.redirect('/mongo/login');
+        });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const getSignup = (req, res, next) => {
@@ -65,8 +85,7 @@ const postSignup = (req, res, next) => {
 };
 
 const postLogout = (req, res, next) => {
-  req.session.destroy((err) => {
-    console.log(err);
+  req.session.destroy(() => {
     res.redirect('/mongo/login');
   });
 };
