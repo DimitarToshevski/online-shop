@@ -30,6 +30,8 @@ const postLogin = (req, res, next) => {
               res.redirect('/');
             });
           } else {
+            req.flash('error', 'Invalid credentials.');
+
             return res.redirect('/login');
           }
         })
@@ -59,6 +61,8 @@ const postSignup = (req, res, next) => {
   User.findOne({ where: { email } })
     .then((fetchedUser) => {
       if (fetchedUser) {
+        req.flash('error', 'Email already exists.');
+
         return res.redirect('/signup');
       }
 

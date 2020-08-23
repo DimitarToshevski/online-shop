@@ -17,6 +17,8 @@ const postLogin = (req, res, next) => {
   MongoUser.findOne({ email })
     .then((user) => {
       if (!user) {
+        req.flash('error', 'Invalid credentials.');
+
         return res.redirect('/mongo/login');
       }
 
@@ -30,6 +32,8 @@ const postLogin = (req, res, next) => {
               res.redirect('/mongo');
             });
           } else {
+            req.flash('error', 'Invalid credentials.');
+
             return res.redirect('/mongo/login');
           }
         })
@@ -59,6 +63,7 @@ const postSignup = (req, res, next) => {
   MongoUser.findOne({ email })
     .then((fetchedUser) => {
       if (fetchedUser) {
+        req.flash('error', 'Email already exists.');
         return res.redirect('/mongo/signup');
       }
 

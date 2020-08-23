@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const csrf = require('csurf');
+const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
@@ -83,6 +84,9 @@ app.use(
 // for each post request look for csrf token
 app.use(csrfProtection);
 
+// used for attaching error messages
+app.use(flash());
+
 // Store the MySQL user in the req
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -116,8 +120,14 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+  const errorMessage = req.flash('error');
+  const successMessage = req.flash('success');
+
   res.locals.isLoggedIn = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
+  res.locals.errorMessage = errorMessage.length > 0 ? errorMessage : undefined;
+  res.locals.successMessage =
+    successMessage.length > 0 ? successMessage : undefined;
 
   next();
 });
