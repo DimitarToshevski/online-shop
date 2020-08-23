@@ -53,6 +53,23 @@ class User {
       );
   }
 
+  getCart() {
+    return getMongoDb()
+      .collection('products')
+      .find({ _id: { $in: this.cart.items.map((i) => i.productId) } })
+      .toArray()
+      .then((products) => {
+        return products.map((p) => {
+          return {
+            ...p,
+            quantity: this.cart.items.find(
+              (i) => i.productId.toString() === p._id.toString()
+            ).quantity,
+          };
+        });
+      });
+  }
+
   static findById(id) {
     return getMongoDb()
       .collection('users')
