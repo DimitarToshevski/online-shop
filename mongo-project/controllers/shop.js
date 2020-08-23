@@ -117,10 +117,8 @@ const postOrder = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-  console.log(req.mongoUser);
   Order.find({ 'user.userId': req.mongoUser._id })
     .then((orders) => {
-      console.log(orders);
       res.render('ejs/shop/orders', {
         pageTitle: 'Your Orders',
         path: '/orders',
