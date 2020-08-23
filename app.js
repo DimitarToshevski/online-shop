@@ -2,6 +2,7 @@ const express = require('express');
 // const expressHbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
+const csrf = require('csurf');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
@@ -18,6 +19,8 @@ const MongoUser = require('./mongo-project/models/user');
 
 // Constants
 const app = express();
+
+const csrfProtection = csrf();
 
 const MONGODB_URI =
   'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
@@ -44,6 +47,7 @@ const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const shopRoutes = require('./routes/shop');
 const mongoRoutes = require('./mongo-project/routes/main');
+const user = require('./mongo-project/models/user');
 
 // app.engine(
 //   'hbs',
@@ -76,6 +80,9 @@ app.use(
   })
 );
 
+// for each post request look for csrf token
+app.use(csrfProtection);
+
 // Store the MySQL user in the req
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -106,6 +113,13 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => console.log(err));
+});
+
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+
+  next();
 });
 
 // routes that are using controllers connected to MongoDB

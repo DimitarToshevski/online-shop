@@ -1,5 +1,6 @@
 <% if (isLoggedIn) { %>
 <form action="<%= mongo ? '/mongo/cart' : '/cart' %>" method="POST">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   <input
     type="hidden"
     name="productId"

@@ -3,12 +3,10 @@ const bcrypt = require('bcryptjs');
 const MongoUser = require('../models/user');
 
 const getLogin = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
   res.render('ejs/auth/login', {
     pageTitle: 'Login',
     path: '/login',
     mongo: true,
-    isLoggedIn,
   });
 };
 
@@ -46,12 +44,10 @@ const postLogin = (req, res, next) => {
 };
 
 const getSignup = (req, res, next) => {
-  const isLoggedIn = req.session.isLoggedIn;
   res.render('ejs/auth/signup', {
     pageTitle: 'Signup',
     path: '/signup',
     mongo: true,
-    isLoggedIn,
   });
 };
 

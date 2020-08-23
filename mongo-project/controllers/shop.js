@@ -10,7 +10,6 @@ const getProducts = (req, res, next) => {
         pageTitle: 'All Products',
         path: '/products',
         mongo: true,
-        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -26,7 +25,6 @@ const getProduct = (req, res, next) => {
         pageTitle: product.title,
         path: '/products',
         mongo: true,
-        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -40,7 +38,6 @@ const getIndex = (req, res, next) => {
         pageTitle: 'Shop',
         path: '/',
         mongo: true,
-        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -56,7 +53,6 @@ const getCart = (req, res, next) => {
         path: '/cart',
         products: user.cart.items,
         mongo: true,
-        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -124,7 +120,6 @@ const getOrders = (req, res, next) => {
         path: '/orders',
         orders,
         mongo: true,
-        isLoggedIn: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -135,7 +130,6 @@ const getCheckout = (req, res, next) => {
     pageTitle: 'Checkout',
     path: '/checkout',
     mongo: true,
-    isLoggedIn: req.session.isLoggedIn,
   });
 };
 
