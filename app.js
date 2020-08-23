@@ -19,7 +19,7 @@ const app = express();
 
 const MONGODB_URI =
   'mongodb+srv://admin:1234@cluster0.aqbio.mongodb.net/shop?retryWrites=true&w=majority';
-// TODO - implement MySQLDbStore with it's package
+// TODO - implement MySQLDbStore with it's package https://www.npmjs.com/package/express-mysql-session
 const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: 'sessions',
