@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 const getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render('ejs/admin/products', {
         products,
@@ -23,10 +23,10 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = (req, res, next) => {
-  const product = new Product({ ...req.body, userId: req.mongoUser._id });
+  const product = new Product({ ...req.body });
 
   product
-    .save(req.body)
+    .save()
     .then(() => {
       res.redirect('/mongo/admin/products');
     })
@@ -61,14 +61,16 @@ const getEditProduct = (req, res, next) => {
 const postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
 
-  const product = new Product({
-    ...req.body,
-    id: productId,
-    userId: req.mongoUser._id,
-  });
+  Product.findById(productId)
+    .then((product) => {
+      product.title = req.body.title;
+      product.price = req.body.price;
+      product.description = req.body.description;
+      product.imageUrl = req.body.imageUrl;
 
-  product
-    .save()
+      return product.save();
+    })
+
     .then(() => {
       res.redirect('/mongo/admin/products');
     })
@@ -78,7 +80,7 @@ const postEditProduct = (req, res, next) => {
 const postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
 
-  Product.deleteById(productId)
+  Product.findByIdAndDelete(productId)
     .then(() => {
       res.redirect('/mongo/admin/products');
     })

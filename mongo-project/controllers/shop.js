@@ -1,7 +1,8 @@
 const Product = require('../models/product');
+const mongoose = require('mongoose');
 
 const getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render('ejs/shop/product-list', {
         products,
@@ -16,7 +17,7 @@ const getProducts = (req, res, next) => {
 const getProduct = (req, res, next) => {
   const productId = req.params.productId;
 
-  Product.findById(productId)
+  Product.findById(mongoose.Types.ObjectId(productId))
     .then((product) => {
       res.render('ejs/shop/product-detail', {
         product,
@@ -29,7 +30,7 @@ const getProduct = (req, res, next) => {
 };
 
 const getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render('ejs/shop/index', {
         products,
