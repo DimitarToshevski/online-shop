@@ -52,6 +52,13 @@
           >Admin Products
         </a>
       </li>
+      <li class="main-header__item">
+        <a
+          class="<%= path === '/graphql' ? 'active' : '' %>"
+          href="<%= mongo ? '/mongo/graphql': '/graphql' %>"
+          >GraphQL
+        </a>
+      </li>
       <% } %>
     </ul>
     <ul class="main-header__item-list">
@@ -131,6 +138,13 @@
         class="<%= path === '/admin/products' ? 'active' : '' %>"
         href="<%= mongo ? '/mongo/admin/products': '/admin/products' %>"
         >Admin Products
+      </a>
+    </li>
+    <li class="mobile-nav__item">
+      <a
+        class="<%= path === '/graphql/products' ? 'active' : '' %>"
+        href="<%= mongo ? '/mongo/graphql/products': '/graphql/products' %>"
+        >GraphQL Products
       </a>
     </li>
     <% } %>

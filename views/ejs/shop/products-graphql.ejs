@@ -1,0 +1,43 @@
+<%- include('../../layouts/ejs/head') %>
+
+<link rel="stylesheet" href="/css/product.css" />
+<link rel="stylesheet" href="/css/forms.css" />
+</head>
+
+<body>
+    <%- include('../../layouts/ejs/navigation') %>
+
+    <main>
+        <% if (products.length > 0) { %>
+        <div class="grid">
+            <% for (let product of products) { %>
+            <article class="card product-item">
+                <% if (product.title) { %>
+                <header class="card__header">
+                    <h1 class="product__title"><%= product.title %></h1>
+                </header>
+                <% } %>
+                <% if (product.imageUrl) { %>
+                <div class="card__image">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+                </div>
+                <% } %>
+                <div class="card__content">
+                    <% if (product.price) { %>
+                    <h2 class="product__price">$<%= product.price %></h2>
+                    <% } %>
+                    <% if (product.description) { %>
+                    <p class="product__description">
+                        <%= product.description %>
+                    </p>
+                    <% } %>
+                </div>
+            </article>
+            <% } %>
+        </div>
+        <% } else { %>
+        <h1>No Products Fetched via GraphQL!</h1>
+        <% } %>
+    </main>
+
+    <%- include('../../layouts/ejs/end') %>

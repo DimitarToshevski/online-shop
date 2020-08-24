@@ -8,11 +8,14 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDbStore = require('connect-mongodb-session')(session);
 const MySqlDbStore = require('express-mysql-session')(session);
+const { graphqlHTTP } = require('express-graphql');
 
 // Local imports
 const sequelize = require('./util/sql-database');
 const sqlAssistant = require('./util/sql-assistant');
 const isAuth = require('./middleware/is-auth');
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolver = require('./graphql/resolvers');
 
 // Model imports
 const User = require('./models/user');
@@ -43,12 +46,12 @@ const mySqlStore = new MySqlDbStore(mySqlStoreOptions);
 
 // Routes and error controller
 const errorController = require('./controllers/error');
+const graphqlController = require('./mongo-project/controllers/graphql');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const shopRoutes = require('./routes/shop');
 const mongoRoutes = require('./mongo-project/routes/main');
-const user = require('./mongo-project/models/user');
 
 // app.engine(
 //   'hbs',
@@ -65,6 +68,7 @@ app.set('views', 'views');
 
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true })); // parsing the body (files need different parsers)
+app.use(bodyParser.json({ extended: true })); // parsing the body (files need different parsers)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Create a session
@@ -82,10 +86,19 @@ app.use(
 );
 
 // for each post request look for csrf token
-app.use(csrfProtection);
+// app.use(csrfProtection);
 
 // used for attaching error messages
 app.use(flash());
+
+app.post(
+  '/graphql',
+  graphqlController.stripQuery,
+  graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver,
+  })
+);
 
 // Store the MySQL user in the req
 app.use((req, res, next) => {
@@ -124,7 +137,7 @@ app.use((req, res, next) => {
   const successMessage = req.flash('success');
 
   res.locals.isLoggedIn = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
+  res.locals.csrfToken = 'req.csrfToken()';
   res.locals.errorMessage = errorMessage.length > 0 ? errorMessage : undefined;
   res.locals.successMessage =
     successMessage.length > 0 ? successMessage : undefined;
