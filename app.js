@@ -46,10 +46,11 @@ const mySqlStore = new MySqlDbStore(mySqlStoreOptions);
 
 // Routes and error controller
 const errorController = require('./controllers/error');
-const graphqlController = require('./mongo-project/controllers/graphql');
+const graphqlController = require('./controllers/graphql');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
+const graphqlRoutes = require('./routes/graphql');
 const shopRoutes = require('./routes/shop');
 const mongoRoutes = require('./mongo-project/routes/main');
 
@@ -150,6 +151,7 @@ app.use('/mongo', mongoRoutes);
 
 // routes that are using controllers connected to MySQL
 app.use('/admin', isAuth, adminRoutes);
+app.use('/graphql', isAuth, graphqlRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 

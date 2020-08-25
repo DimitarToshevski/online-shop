@@ -1,7 +1,7 @@
 const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
-    type Product {
+    type MongoProduct {
         _id: ID!
         title: String!
         description: String!
@@ -10,8 +10,18 @@ module.exports = buildSchema(`
         userId: ID!
     }
 
+    type MySqlProduct {
+        id: ID!
+        title: String!
+        description: String!
+        imageUrl: String!
+        price: Float!
+        userId: ID!
+    }
+
     type RootQuery {
-        getProducts: [Product]
+        getMongoProducts: [MongoProduct!]
+        getMySqlProducts: [MySqlProduct!]
     }
 
     schema {

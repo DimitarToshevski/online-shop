@@ -1,7 +1,11 @@
-const Product = require('../mongo-project/models/product');
+const MongoProduct = require('../mongo-project/models/product');
+const MySqlProduct = require('../models/product');
 
 module.exports = {
-  getProducts(args, req) {
-    return Product.find().catch((err) => console.log(err));
+  getMongoProducts(args, req) {
+    return MongoProduct.find().catch((err) => console.log(err));
+  },
+  getMySqlProducts(args, req) {
+    return MySqlProduct.findAll().catch((err) => console.log(err));
   },
 };
