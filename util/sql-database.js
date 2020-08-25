@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('node-shop', 'root', '1234', {
+const sequelize = new Sequelize('shop', 'root', 'Password1!', {
   dialect: 'mysql',
-  host: 'localhost',
+  host: 'node-shop.cpwu0y8zcyah.eu-central-1.rds.amazonaws.com',
   logging: false,
 });
 
