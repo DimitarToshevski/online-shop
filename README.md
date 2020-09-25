@@ -1,2 +1,2 @@
 # online-shop
-Node, Express, MySQL
+Node, Express, MySQL, MongoDB, GraphQL
